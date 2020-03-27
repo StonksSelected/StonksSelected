@@ -1,0 +1,27 @@
+{
+  "_fv": 5,
+  "_type": "loottable",
+  "definition": {
+    "type": "Entity",
+    "pools": [
+      {
+        "minrolls": 1,
+        "maxrolls": 10000,
+        "minbonusrolls": 1,
+        "maxbonusrolls": 1,
+        "hasbonusrolls": false,
+        "entries": [
+          {
+            "type": "item",
+            "item": {
+              "value": "CUSTOM:Blade"
+            },
+            "weight": 1
+          }
+        ]
+      }
+    ],
+    "name": "stonkblade",
+    "namespace": "mod"
+  }
+}
