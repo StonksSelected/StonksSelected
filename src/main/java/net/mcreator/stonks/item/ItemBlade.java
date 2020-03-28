@@ -1,4 +1,5 @@
-package net.mcreator.stonks;
+
+package net.mcreator.stonks.item;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -6,18 +7,24 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 
+import net.minecraft.world.World;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Item;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.block.state.IBlockState;
 
-@Elementsstonks.ModElement.Tag
-public class MCreatorStonkersEnchantedIngotIngot extends Elementsstonks.ModElement {
-	@GameRegistry.ObjectHolder("stonks:stonkersenchantedingot")
-	public static final Item block = null;
+import net.mcreator.stonks.creativetab.TabStonksMod;
+import net.mcreator.stonks.ElementsStonks;
 
-	public MCreatorStonkersEnchantedIngotIngot(Elementsstonks instance) {
-		super(instance, 9);
+import java.util.List;
+
+@ElementsStonks.ModElement.Tag
+public class ItemBlade extends ElementsStonks.ModElement {
+	@GameRegistry.ObjectHolder("stonks:blade")
+	public static final Item block = null;
+	public ItemBlade(ElementsStonks instance) {
+		super(instance, 25);
 	}
 
 	@Override
@@ -28,16 +35,15 @@ public class MCreatorStonkersEnchantedIngotIngot extends Elementsstonks.ModEleme
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerModels(ModelRegistryEvent event) {
-		ModelLoader.setCustomModelResourceLocation(block, 0, new ModelResourceLocation("stonks:stonkersenchantedingot", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(block, 0, new ModelResourceLocation("stonks:blade", "inventory"));
 	}
-
 	public static class ItemCustom extends Item {
 		public ItemCustom() {
 			setMaxDamage(0);
 			maxStackSize = 64;
-			setUnlocalizedName("stonkersenchantedingot");
-			setRegistryName("stonkersenchantedingot");
-			setCreativeTab(MCreatorStonksMod.tab);
+			setUnlocalizedName("blade");
+			setRegistryName("blade");
+			setCreativeTab(TabStonksMod.tab);
 		}
 
 		@Override
@@ -59,6 +65,12 @@ public class MCreatorStonkersEnchantedIngotIngot extends Elementsstonks.ModEleme
 		@SideOnly(Side.CLIENT)
 		public boolean hasEffect(ItemStack itemstack) {
 			return true;
+		}
+
+		@Override
+		public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+			super.addInformation(itemstack, world, list, flag);
+			list.add("Used to make stond blade");
 		}
 	}
 }

@@ -1,13 +1,16 @@
-package net.mcreator.stonks;
+
+package net.mcreator.stonks.util;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraft.util.ResourceLocation;
 
-@Elementsstonks.ModElement.Tag
-public class MCreatorStonkblade extends Elementsstonks.ModElement {
-	public MCreatorStonkblade(Elementsstonks instance) {
+import net.mcreator.stonks.ElementsStonks;
+
+@ElementsStonks.ModElement.Tag
+public class LootTableStonkblade extends ElementsStonks.ModElement {
+	public LootTableStonkblade(ElementsStonks instance) {
 		super(instance, 24);
 	}
 

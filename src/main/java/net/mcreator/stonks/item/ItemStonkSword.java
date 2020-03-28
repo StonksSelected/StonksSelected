@@ -1,4 +1,5 @@
-package net.mcreator.stonks;
+
+package net.mcreator.stonks.item;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -15,30 +16,33 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 
+import net.mcreator.stonks.creativetab.TabStonksMod;
+import net.mcreator.stonks.ElementsStonks;
+
 import java.util.Set;
 import java.util.HashMap;
 
 import com.google.common.collect.Multimap;
 
-@Elementsstonks.ModElement.Tag
-public class MCreatorStonkSword extends Elementsstonks.ModElement {
+@ElementsStonks.ModElement.Tag
+public class ItemStonkSword extends ElementsStonks.ModElement {
 	@GameRegistry.ObjectHolder("stonks:stonksword")
 	public static final Item block = null;
-
-	public MCreatorStonkSword(Elementsstonks instance) {
+	public ItemStonkSword(ElementsStonks instance) {
 		super(instance, 1);
 	}
 
 	@Override
 	public void initElements() {
 		elements.items.add(() -> new ItemSword(EnumHelper.addToolMaterial("STONKSWORD", 1, 0, 4f, 99996f, 0)) {
+			@Override
 			public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot slot) {
 				Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(slot);
 				if (slot == EntityEquipmentSlot.MAINHAND) {
-					multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier",
-							(double) this.getAttackDamage(), 0));
-					multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2,
-							0));
+					multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(),
+							new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) this.getAttackDamage(), 0));
+					multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(),
+							new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, 0));
 				}
 				return multimap;
 			}
@@ -54,7 +58,7 @@ public class MCreatorStonkSword extends Elementsstonks.ModElement {
 			public boolean hasEffect(ItemStack itemstack) {
 				return true;
 			}
-		}.setUnlocalizedName("stonksword").setRegistryName("stonksword").setCreativeTab(MCreatorStonksMod.tab));
+		}.setUnlocalizedName("stonksword").setRegistryName("stonksword").setCreativeTab(TabStonksMod.tab));
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -11,10 +11,9 @@ import net.minecraft.world.World;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.client.Minecraft;
 
-public class stonksVariables {
+public class StonksVariables {
 	public static class MapVariables extends WorldSavedData {
 		public static final String DATA_NAME = "stonks_mapvars";
-
 		public MapVariables() {
 			super(DATA_NAME);
 		}
@@ -35,9 +34,9 @@ public class stonksVariables {
 		public void syncData(World world) {
 			this.markDirty();
 			if (world.isRemote) {
-				stonks.PACKET_HANDLER.sendToServer(new WorldSavedDataSyncMessage(0, this));
+				Stonks.PACKET_HANDLER.sendToServer(new WorldSavedDataSyncMessage(0, this));
 			} else {
-				stonks.PACKET_HANDLER.sendToAll(new WorldSavedDataSyncMessage(0, this));
+				Stonks.PACKET_HANDLER.sendToAll(new WorldSavedDataSyncMessage(0, this));
 			}
 		}
 
@@ -53,7 +52,6 @@ public class stonksVariables {
 
 	public static class WorldVariables extends WorldSavedData {
 		public static final String DATA_NAME = "stonks_worldvars";
-
 		public WorldVariables() {
 			super(DATA_NAME);
 		}
@@ -74,9 +72,9 @@ public class stonksVariables {
 		public void syncData(World world) {
 			this.markDirty();
 			if (world.isRemote) {
-				stonks.PACKET_HANDLER.sendToServer(new WorldSavedDataSyncMessage(1, this));
+				Stonks.PACKET_HANDLER.sendToServer(new WorldSavedDataSyncMessage(1, this));
 			} else {
-				stonks.PACKET_HANDLER.sendToDimension(new WorldSavedDataSyncMessage(1, this), world.provider.getDimension());
+				Stonks.PACKET_HANDLER.sendToDimension(new WorldSavedDataSyncMessage(1, this), world.provider.getDimension());
 			}
 		}
 
@@ -94,8 +92,8 @@ public class stonksVariables {
 		@Override
 		public IMessage onMessage(WorldSavedDataSyncMessage message, MessageContext context) {
 			if (context.side == Side.SERVER)
-				context.getServerHandler().player.getServerWorld().addScheduledTask(
-						() -> syncData(message, context, context.getServerHandler().player.world));
+				context.getServerHandler().player.getServerWorld()
+						.addScheduledTask(() -> syncData(message, context, context.getServerHandler().player.world));
 			else
 				Minecraft.getMinecraft().addScheduledTask(() -> syncData(message, context, Minecraft.getMinecraft().player.world));
 			return null;
@@ -104,9 +102,9 @@ public class stonksVariables {
 		private void syncData(WorldSavedDataSyncMessage message, MessageContext context, World world) {
 			if (context.side == Side.SERVER) {
 				if (message.type == 0)
-					stonks.PACKET_HANDLER.sendToAll(message);
+					Stonks.PACKET_HANDLER.sendToAll(message);
 				else
-					stonks.PACKET_HANDLER.sendToDimension(message, world.provider.getDimension());
+					Stonks.PACKET_HANDLER.sendToDimension(message, world.provider.getDimension());
 			}
 			if (message.type == 0) {
 				world.getMapStorage().setData(MapVariables.DATA_NAME, message.data);
@@ -119,7 +117,6 @@ public class stonksVariables {
 	public static class WorldSavedDataSyncMessage implements IMessage {
 		public int type;
 		public WorldSavedData data;
-
 		public WorldSavedDataSyncMessage() {
 		}
 

@@ -5,7 +5,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
-public class ServerProxystonks implements IProxystonks {
+public class ServerProxyStonks implements IProxyStonks {
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
 	}

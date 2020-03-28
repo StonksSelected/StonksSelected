@@ -1,4 +1,5 @@
-package net.mcreator.stonks;
+
+package net.mcreator.stonks.world;
 
 import org.jline.terminal.Size;
 
@@ -42,12 +43,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.Item;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Biomes;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -66,6 +63,9 @@ import net.minecraft.block.BlockPortal;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.Block;
 
+import net.mcreator.stonks.item.ItemStonkland;
+import net.mcreator.stonks.ElementsStonks;
+
 import javax.annotation.Nullable;
 
 import java.util.Random;
@@ -73,17 +73,14 @@ import java.util.List;
 
 import com.google.common.cache.LoadingCache;
 
-@Elementsstonks.ModElement.Tag
-public class MCreatorStonkland extends Elementsstonks.ModElement {
+@ElementsStonks.ModElement.Tag
+public class WorldStonkland extends ElementsStonks.ModElement {
 	public static int DIMID = 3;
 	public static final boolean NETHER_TYPE = false;
-	@GameRegistry.ObjectHolder("stonks:stonkland")
-	public static final Item block = null;
 	@GameRegistry.ObjectHolder("stonks:stonkland_portal")
 	public static final BlockCustomPortal portal = null;
 	public static DimensionType dtype;
-
-	public MCreatorStonkland(Elementsstonks instance) {
+	public WorldStonkland(ElementsStonks instance) {
 		super(instance, 21);
 	}
 
@@ -91,7 +88,7 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 	public void initElements() {
 		elements.blocks.add(() -> new BlockCustomPortal());
 		elements.items.add(() -> new ItemBlock(portal).setRegistryName(portal.getRegistryName()));
-		elements.items.add(() -> new ModTrigger().setUnlocalizedName("stonkland").setRegistryName("stonkland"));
+		elements.items.add(() -> new ItemStonkland().setUnlocalizedName("stonkland").setRegistryName("stonkland"));
 	}
 
 	@Override
@@ -107,9 +104,8 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerModels(ModelRegistryEvent event) {
-		ModelLoader.setCustomModelResourceLocation(block, 0, new ModelResourceLocation("stonks:stonkland", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ItemStonkland.block, 0, new ModelResourceLocation("stonks:stonkland", "inventory"));
 	}
-
 	public static class WorldProviderMod extends WorldProvider {
 		@Override
 		public void init() {
@@ -173,7 +169,6 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 	public static class TeleporterDimensionMod extends Teleporter {
 		private Vec3d lastPortalVec;
 		private EnumFacing teleportDirection;
-
 		public TeleporterDimensionMod(WorldServer worldServer, Vec3d lastPortalVec, EnumFacing teleportDirection) {
 			super(worldServer);
 			this.lastPortalVec = lastPortalVec;
@@ -216,8 +211,8 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 											int j5 = j3 + l4;
 											int k5 = l2 + (k4 - 1) * i4 - j4 * l3;
 											blockpos$mutableblockpos.setPos(i5, j5, k5);
-											if (l4 < 0 && !this.world.getBlockState(blockpos$mutableblockpos).getMaterial().isSolid() || l4 >= 0
-													&& !this.world.isAirBlock(blockpos$mutableblockpos)) {
+											if (l4 < 0 && !this.world.getBlockState(blockpos$mutableblockpos).getMaterial().isSolid()
+													|| l4 >= 0 && !this.world.isAirBlock(blockpos$mutableblockpos)) {
 												continue label293;
 											}
 										}
@@ -256,8 +251,8 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 											int i13 = i7 + j11;
 											int j13 = j6 + (j10 - 1) * j9;
 											blockpos$mutableblockpos.setPos(j12, i13, j13);
-											if (j11 < 0 && !this.world.getBlockState(blockpos$mutableblockpos).getMaterial().isSolid() || j11 >= 0
-													&& !this.world.isAirBlock(blockpos$mutableblockpos)) {
+											if (j11 < 0 && !this.world.getBlockState(blockpos$mutableblockpos).getMaterial().isSolid()
+													|| j11 >= 0 && !this.world.isAirBlock(blockpos$mutableblockpos)) {
 												continue label231;
 											}
 										}
@@ -296,9 +291,8 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 							int k10 = k2 + k8;
 							int k11 = k6 + (l7 - 1) * i3 - j7 * l6;
 							boolean flag = k8 < 0;
-							this.world.setBlockState(new BlockPos(k9, k10, k11), flag
-									? Blocks.PISTON.getDefaultState().getBlock().getDefaultState()
-									: Blocks.AIR.getDefaultState());
+							this.world.setBlockState(new BlockPos(k9, k10, k11),
+									flag ? Blocks.PISTON.getDefaultState().getBlock().getDefaultState() : Blocks.AIR.getDefaultState());
 						}
 					}
 				}
@@ -311,9 +305,8 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 						int l11 = k2 + l9;
 						int k12 = k6 + (l8 - 1) * i3;
 						boolean flag1 = l8 == 0 || l8 == 3 || l9 == -1 || l9 == 3;
-						this.world.setBlockState(new BlockPos(l10, l11, k12), flag1
-								? Blocks.PISTON.getDefaultState().getBlock().getDefaultState()
-								: iblockstate, 2);
+						this.world.setBlockState(new BlockPos(l10, l11, k12),
+								flag1 ? Blocks.PISTON.getDefaultState().getBlock().getDefaultState() : iblockstate, 2);
 					}
 				}
 				for (int i9 = 0; i9 < 4; ++i9) {
@@ -349,9 +342,8 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 							int j2 = j + l1;
 							int k2 = k + k1 * 0 - j1 * 1;
 							boolean flag = l1 < 0;
-							this.world.setBlockState(new BlockPos(i2, j2, k2), flag
-									? Blocks.PISTON.getDefaultState().getBlock().getDefaultState()
-									: Blocks.AIR.getDefaultState());
+							this.world.setBlockState(new BlockPos(i2, j2, k2),
+									flag ? Blocks.PISTON.getDefaultState().getBlock().getDefaultState() : Blocks.AIR.getDefaultState());
 						}
 					}
 				}
@@ -382,7 +374,8 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 				for (int i1 = -128; i1 <= 128; ++i1) {
 					BlockPos blockpos2;
 					for (int j1 = -128; j1 <= 128; ++j1) {
-						for (BlockPos blockpos1 = blockpos3.add(i1, this.world.getActualHeight() - 1 - blockpos3.getY(), j1); blockpos1.getY() >= 0; blockpos1 = blockpos2) {
+						for (BlockPos blockpos1 = blockpos3.add(i1, this.world.getActualHeight() - 1 - blockpos3.getY(), j1); blockpos1
+								.getY() >= 0; blockpos1 = blockpos2) {
 							blockpos2 = blockpos1.down();
 							if (this.world.getBlockState(blockpos1).getBlock() == portal) {
 								for (blockpos2 = blockpos1.down(); this.world.getBlockState(blockpos2).getBlock() == portal; blockpos2 = blockpos2
@@ -407,10 +400,11 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 				double d7 = (double) blockpos.getZ() + 0.5D;
 				BlockPattern.PatternHelper blockpattern$patternhelper = portal.createPatternHelper(this.world, blockpos);
 				boolean flag1 = blockpattern$patternhelper.getForwards().rotateY().getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE;
-				double d2 = blockpattern$patternhelper.getForwards().getAxis() == EnumFacing.Axis.X ? (double) blockpattern$patternhelper
-						.getFrontTopLeft().getZ() : (double) blockpattern$patternhelper.getFrontTopLeft().getX();
-				double d6 = (double) (blockpattern$patternhelper.getFrontTopLeft().getY() + 1) - lastPortalVec.y
-						* (double) blockpattern$patternhelper.getHeight();
+				double d2 = blockpattern$patternhelper.getForwards().getAxis() == EnumFacing.Axis.X
+						? (double) blockpattern$patternhelper.getFrontTopLeft().getZ()
+						: (double) blockpattern$patternhelper.getFrontTopLeft().getX();
+				double d6 = (double) (blockpattern$patternhelper.getFrontTopLeft().getY() + 1)
+						- lastPortalVec.y * (double) blockpattern$patternhelper.getHeight();
 				if (flag1) {
 					++d2;
 				}
@@ -496,9 +490,11 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 				BlockPos blockpos = blockportal$size.bottomLeft.up(blockportal$size.getHeight() - 1);
 				for (EnumFacing.AxisDirection enumfacing$axisdirection : EnumFacing.AxisDirection.values()) {
 					BlockPattern.PatternHelper blockpattern$patternhelper = new BlockPattern.PatternHelper(
-							enumfacing.getAxisDirection() == enumfacing$axisdirection ? blockpos : blockpos.offset(blockportal$size.rightDir,
-									blockportal$size.getWidth() - 1), EnumFacing.getFacingFromAxis(enumfacing$axisdirection, enumfacing$axis),
-							EnumFacing.UP, loadingcache, blockportal$size.getWidth(), blockportal$size.getHeight(), 1);
+							enumfacing.getAxisDirection() == enumfacing$axisdirection
+									? blockpos
+									: blockpos.offset(blockportal$size.rightDir, blockportal$size.getWidth() - 1),
+							EnumFacing.getFacingFromAxis(enumfacing$axisdirection, enumfacing$axis), EnumFacing.UP, loadingcache,
+							blockportal$size.getWidth(), blockportal$size.getHeight(), 1);
 					for (int i = 0; i < blockportal$size.getWidth(); ++i) {
 						for (int j = 0; j < blockportal$size.getHeight(); ++j) {
 							BlockWorldState blockworldstate = blockpattern$patternhelper.translateOffset(i, j, 1);
@@ -514,16 +510,21 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 						enumfacing$axisdirection1 = enumfacing$axisdirection2;
 					}
 				}
-				return new BlockPattern.PatternHelper(enumfacing.getAxisDirection() == enumfacing$axisdirection1 ? blockpos : blockpos.offset(
-						blockportal$size.rightDir, blockportal$size.getWidth() - 1), EnumFacing.getFacingFromAxis(enumfacing$axisdirection1,
-						enumfacing$axis), EnumFacing.UP, loadingcache, blockportal$size.getWidth(), blockportal$size.getHeight(), 1);
+				return new BlockPattern.PatternHelper(
+						enumfacing.getAxisDirection() == enumfacing$axisdirection1
+								? blockpos
+								: blockpos.offset(blockportal$size.rightDir, blockportal$size.getWidth() - 1),
+						EnumFacing.getFacingFromAxis(enumfacing$axisdirection1, enumfacing$axis), EnumFacing.UP, loadingcache,
+						blockportal$size.getWidth(), blockportal$size.getHeight(), 1);
 			}
 		}
 
-		@Override
-		/** 
-		 * Called when a neighboring block was changed and marks that this state should perform any checks during a neighbor change. Cases may include when redstone power is updated, cactus blocks popping off due to a neighboring solid block, etc.
-		 */
+		@Override /**
+					 * Called when a neighboring block was changed and marks that this state should
+					 * perform any checks during a neighbor change. Cases may include when redstone
+					 * power is updated, cactus blocks popping off due to a neighboring solid block,
+					 * etc.
+					 */
 		public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 			EnumFacing.Axis enumfacing$axis = (EnumFacing.Axis) state.getValue(AXIS);
 			if (enumfacing$axis == EnumFacing.Axis.X) {
@@ -561,8 +562,9 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 			}
 			if (random.nextInt(110) == 0)
 				world.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-						(net.minecraft.util.SoundEvent) net.minecraft.util.SoundEvent.REGISTRY.getObject(new ResourceLocation(
-								("block.portal.ambient"))), SoundCategory.BLOCKS, 0.5f, random.nextFloat() * 0.4F + 0.8F, false);
+						(net.minecraft.util.SoundEvent) net.minecraft.util.SoundEvent.REGISTRY
+								.getObject(new ResourceLocation(("block.portal.ambient"))),
+						SoundCategory.BLOCKS, 0.5f, random.nextFloat() * 0.4F + 0.8F, false);
 		}
 
 		public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
@@ -584,8 +586,9 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 
 		private TeleporterDimensionMod getTeleporterForDimension(Entity entity, BlockPos pos, int dimid) {
 			BlockPattern.PatternHelper bph = portal.createPatternHelper(entity.world, new BlockPos(pos));
-			double d0 = bph.getForwards().getAxis() == EnumFacing.Axis.X ? (double) bph.getFrontTopLeft().getZ() : (double) bph.getFrontTopLeft()
-					.getX();
+			double d0 = bph.getForwards().getAxis() == EnumFacing.Axis.X
+					? (double) bph.getFrontTopLeft().getZ()
+					: (double) bph.getFrontTopLeft().getX();
 			double d1 = bph.getForwards().getAxis() == EnumFacing.Axis.X ? entity.posZ : entity.posX;
 			d1 = Math.abs(MathHelper.pct(d1 - (double) (bph.getForwards().rotateY().getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? 1 : 0),
 					d0, d0 - (double) bph.getWidth()));
@@ -593,7 +596,6 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 					(double) (bph.getFrontTopLeft().getY() - bph.getHeight()));
 			return new TeleporterDimensionMod(entity.getServer().getWorld(dimid), new Vec3d(d1, d2, 0), bph.getForwards());
 		}
-
 		public static class Size {
 			private final World world;
 			private final EnumFacing.Axis axis;
@@ -603,7 +605,6 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 			private BlockPos bottomLeft;
 			private int height;
 			private int width;
-
 			public Size(World worldIn, BlockPos p_i45694_2_, EnumFacing.Axis p_i45694_3_) {
 				this.world = worldIn;
 				this.axis = p_i45694_3_;
@@ -713,30 +714,6 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 		}
 	}
 
-	public static class ModTrigger extends Item {
-		public ModTrigger() {
-			super();
-			this.maxStackSize = 1;
-			setMaxDamage(64);
-			setCreativeTab(MCreatorStonksMod.tab);
-		}
-
-		@Override
-		public EnumActionResult onItemUse(EntityPlayer entity, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY,
-				float hitZ) {
-			pos = pos.offset(facing);
-			ItemStack itemstack = entity.getHeldItem(hand);
-			if (!entity.canPlayerEdit(pos, facing, itemstack)) {
-				return EnumActionResult.FAIL;
-			} else {
-				if (world.isAirBlock(pos))
-					portal.portalSpawn(world, pos);
-				itemstack.damageItem(1, entity);
-				return EnumActionResult.SUCCESS;
-			}
-		}
-	}
-
 	public static class ChunkProviderModded implements IChunkGenerator {
 		private static final IBlockState STONE = Blocks.DIRT.getStateFromMeta(0);
 		private static final IBlockState STONE2 = Blocks.DIRT.getStateFromMeta(0);
@@ -762,7 +739,6 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 		private double[] limitRegMax;
 		private double[] depthReg;
 		private float[] biomeWeights;
-
 		public ChunkProviderModded(World worldIn, long seed) {
 			worldIn.setSeaLevel(SEALEVEL);
 			caveGenerator = new MapGenCaves() {
@@ -843,11 +819,11 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 					int k1 = this.random.nextInt(16) + 8;
 					(new WorldGenLakes(FLUID.getBlock())).generate(this.world, this.random, blockpos.add(i1, j1, k1));
 				}
-			net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.terraingen.DecorateBiomeEvent.Pre(this.world,
-					this.random, blockpos));
+			net.minecraftforge.common.MinecraftForge.EVENT_BUS
+					.post(new net.minecraftforge.event.terraingen.DecorateBiomeEvent.Pre(this.world, this.random, blockpos));
 			biome.decorate(this.world, this.random, new BlockPos(i, 0, j));
-			net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.terraingen.DecorateBiomeEvent.Post(this.world,
-					this.random, blockpos));
+			net.minecraftforge.common.MinecraftForge.EVENT_BUS
+					.post(new net.minecraftforge.event.terraingen.DecorateBiomeEvent.Post(this.world, this.random, blockpos));
 			if (net.minecraftforge.event.terraingen.TerrainGen.populate(this, this.world, this.random, x, z, false,
 					net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.ANIMALS))
 				WorldEntitySpawner.performWorldGenSpawning(this.world, biome, i + 8, j + 8, 16, 16, this.random);
@@ -1023,15 +999,14 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 		}
 
 		/**
-		 * Given x, z coordinates, we count down all the y positions starting at
-		 * 255 and working our way down. When we hit a non-air block, we replace
-		 * it with biome.topBlock (default grass, descendants may set
-		 * otherwise), and then a relatively shallow layer of blocks of type
-		 * biome.fillerBlock (default dirt). A random set of blocks below y == 5
-		 * (but always including y == 0) is replaced with bedrock. If we don't
-		 * hit non-air until somewhat below sea level, we top with gravel and
-		 * fill down with stone. If biome.fillerBlock is red sand, we replace
-		 * some of that with red sandstone.
+		 * Given x, z coordinates, we count down all the y positions starting at 255 and
+		 * working our way down. When we hit a non-air block, we replace it with
+		 * biome.topBlock (default grass, descendants may set otherwise), and then a
+		 * relatively shallow layer of blocks of type biome.fillerBlock (default dirt).
+		 * A random set of blocks below y == 5 (but always including y == 0) is replaced
+		 * with bedrock. If we don't hit non-air until somewhat below sea level, we top
+		 * with gravel and fill down with stone. If biome.fillerBlock is red sand, we
+		 * replace some of that with red sandstone.
 		 */
 		public final void generateBiomeTerrain(World worldIn, Random rand, ChunkPrimer chunkPrimerIn, int x, int z, double noiseVal, Biome biome) {
 			int i = SEALEVEL;
@@ -1095,7 +1070,6 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 				Biome.REGISTRY.getObject(new ResourceLocation("plains")), Biome.REGISTRY.getObject(new ResourceLocation("extreme_hills")),
 				Biome.REGISTRY.getObject(new ResourceLocation("beaches")), Biome.REGISTRY.getObject(new ResourceLocation("hell")),
 				Biome.REGISTRY.getObject(new ResourceLocation("stonks:stonktrees")),};
-
 		public GenLayerBiomesCustom(long seed) {
 			super(seed);
 		}
@@ -1117,7 +1091,6 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 		private GenLayer genBiomes;
 		private GenLayer biomeIndexLayer;
 		private BiomeCache biomeCache;
-
 		public BiomeProviderCustom() {
 			this.biomeCache = new BiomeCache(this);
 		}
@@ -1167,10 +1140,9 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 			return this.getBiomes(oldBiomeList, x, z, width, depth, true);
 		}
 
-		@Override
-		/** 
-		 * Returns an array of biomes for the location input.
-		 */
+		@Override /**
+					 * Returns an array of biomes for the location input.
+					 */
 		public Biome[] getBiomesForGeneration(Biome[] biomes, int x, int z, int width, int height) {
 			IntCache.resetIntCache();
 			if (biomes == null || biomes.length < width * height) {
@@ -1194,10 +1166,9 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 			}
 		}
 
-		@Override
-		/** 
-		 * Gets a list of biomes for the specified blocks.
-		 */
+		@Override /**
+					 * Gets a list of biomes for the specified blocks.
+					 */
 		public Biome[] getBiomes(@Nullable Biome[] listToReuse, int x, int z, int width, int length, boolean cacheFlag) {
 			IntCache.resetIntCache();
 			if (listToReuse == null || listToReuse.length < width * length) {
@@ -1216,10 +1187,9 @@ public class MCreatorStonkland extends Elementsstonks.ModElement {
 			}
 		}
 
-		@Override
-		/** 
-		 * checks given Chunk's Biomes against List of allowed ones
-		 */
+		@Override /**
+					 * checks given Chunk's Biomes against List of allowed ones
+					 */
 		public boolean areBiomesViable(int x, int z, int radius, List<Biome> allowed) {
 			IntCache.resetIntCache();
 			int i = x - radius >> 2;

@@ -26,6 +26,7 @@ import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.potion.Potion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Item;
@@ -35,38 +36,45 @@ import net.minecraft.block.Block;
 
 import java.util.function.Supplier;
 import java.util.Random;
+import java.util.Map;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Collections;
 import java.util.ArrayList;
 
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Retention;
 
-public class Elementsstonks implements IFuelHandler, IWorldGenerator {
-	protected final List<ModElement> elements = new ArrayList<>();
-	protected final List<Supplier<Block>> blocks = new ArrayList<>();
-	protected final List<Supplier<Item>> items = new ArrayList<>();
-	protected final List<Supplier<Biome>> biomes = new ArrayList<>();
-	protected final List<Supplier<EntityEntry>> entities = new ArrayList<>();
-	protected final List<Supplier<Potion>> potions = new ArrayList<>();
+public class ElementsStonks implements IFuelHandler, IWorldGenerator {
+	public final List<ModElement> elements = new ArrayList<>();
+	public final List<Supplier<Block>> blocks = new ArrayList<>();
+	public final List<Supplier<Item>> items = new ArrayList<>();
+	public final List<Supplier<Biome>> biomes = new ArrayList<>();
+	public final List<Supplier<EntityEntry>> entities = new ArrayList<>();
+	public final List<Supplier<Potion>> potions = new ArrayList<>();
+	public static Map<ResourceLocation, net.minecraft.util.SoundEvent> sounds = new HashMap<>();
+	public ElementsStonks() {
+	}
 
 	public void preInit(FMLPreInitializationEvent event) {
 		try {
 			for (ASMDataTable.ASMData asmData : event.getAsmData().getAll(ModElement.Tag.class.getName())) {
 				Class<?> clazz = Class.forName(asmData.getClassName());
-				if (clazz.getSuperclass() == Elementsstonks.ModElement.class)
-					elements.add((Elementsstonks.ModElement) clazz.getConstructor(this.getClass()).newInstance(this));
+				if (clazz.getSuperclass() == ElementsStonks.ModElement.class)
+					elements.add((ElementsStonks.ModElement) clazz.getConstructor(this.getClass()).newInstance(this));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		Collections.sort(elements);
-		elements.forEach(Elementsstonks.ModElement::initElements);
-		this.addNetworkMessage(stonksVariables.WorldSavedDataSyncMessageHandler.class, stonksVariables.WorldSavedDataSyncMessage.class, Side.SERVER,
+		elements.forEach(ElementsStonks.ModElement::initElements);
+		this.addNetworkMessage(StonksVariables.WorldSavedDataSyncMessageHandler.class, StonksVariables.WorldSavedDataSyncMessage.class, Side.SERVER,
 				Side.CLIENT);
 	}
 
 	public void registerSounds(RegistryEvent.Register<net.minecraft.util.SoundEvent> event) {
+		for (Map.Entry<ResourceLocation, net.minecraft.util.SoundEvent> sound : sounds.entrySet())
+			event.getRegistry().register(sound.getValue().setRegistryName(sound.getKey()));
 	}
 
 	@Override
@@ -87,32 +95,30 @@ public class Elementsstonks implements IFuelHandler, IWorldGenerator {
 	@SubscribeEvent
 	public void onPlayerLoggedIn(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event) {
 		if (!event.player.world.isRemote) {
-			WorldSavedData mapdata = stonksVariables.MapVariables.get(event.player.world);
-			WorldSavedData worlddata = stonksVariables.WorldVariables.get(event.player.world);
+			WorldSavedData mapdata = StonksVariables.MapVariables.get(event.player.world);
+			WorldSavedData worlddata = StonksVariables.WorldVariables.get(event.player.world);
 			if (mapdata != null)
-				stonks.PACKET_HANDLER.sendTo(new stonksVariables.WorldSavedDataSyncMessage(0, mapdata), (EntityPlayerMP) event.player);
+				Stonks.PACKET_HANDLER.sendTo(new StonksVariables.WorldSavedDataSyncMessage(0, mapdata), (EntityPlayerMP) event.player);
 			if (worlddata != null)
-				stonks.PACKET_HANDLER.sendTo(new stonksVariables.WorldSavedDataSyncMessage(1, worlddata), (EntityPlayerMP) event.player);
+				Stonks.PACKET_HANDLER.sendTo(new StonksVariables.WorldSavedDataSyncMessage(1, worlddata), (EntityPlayerMP) event.player);
 		}
 	}
 
 	@SubscribeEvent
 	public void onPlayerChangedDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event) {
 		if (!event.player.world.isRemote) {
-			WorldSavedData worlddata = stonksVariables.WorldVariables.get(event.player.world);
+			WorldSavedData worlddata = StonksVariables.WorldVariables.get(event.player.world);
 			if (worlddata != null)
-				stonks.PACKET_HANDLER.sendTo(new stonksVariables.WorldSavedDataSyncMessage(1, worlddata), (EntityPlayerMP) event.player);
+				Stonks.PACKET_HANDLER.sendTo(new StonksVariables.WorldSavedDataSyncMessage(1, worlddata), (EntityPlayerMP) event.player);
 		}
 	}
 	private int messageID = 0;
-
 	public <T extends IMessage, V extends IMessage> void addNetworkMessage(Class<? extends IMessageHandler<T, V>> handler, Class<T> messageClass,
 			Side... sides) {
 		for (Side side : sides)
-			stonks.PACKET_HANDLER.registerMessage(handler, messageClass, messageID, side);
+			Stonks.PACKET_HANDLER.registerMessage(handler, messageClass, messageID, side);
 		messageID++;
 	}
-
 	public static class GuiHandler implements IGuiHandler {
 		@Override
 		public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
@@ -124,7 +130,6 @@ public class Elementsstonks implements IFuelHandler, IWorldGenerator {
 			return null;
 		}
 	}
-
 	public List<ModElement> getElements() {
 		return elements;
 	}
@@ -148,15 +153,13 @@ public class Elementsstonks implements IFuelHandler, IWorldGenerator {
 	public List<Supplier<Potion>> getPotions() {
 		return potions;
 	}
-
 	public static class ModElement implements Comparable<ModElement> {
 		@Retention(RetentionPolicy.RUNTIME)
 		public @interface Tag {
 		}
-		protected final Elementsstonks elements;
+		protected final ElementsStonks elements;
 		protected final int sortid;
-
-		public ModElement(Elementsstonks elements, int sortid) {
+		public ModElement(ElementsStonks elements, int sortid) {
 			this.elements = elements;
 			this.sortid = sortid;
 		}

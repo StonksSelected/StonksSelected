@@ -1,4 +1,5 @@
-package net.mcreator.stonks;
+
+package net.mcreator.stonks.creativetab;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -7,9 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.init.Items;
 import net.minecraft.creativetab.CreativeTabs;
 
-@Elementsstonks.ModElement.Tag
-public class MCreatorStonksMod extends Elementsstonks.ModElement {
-	public MCreatorStonksMod(Elementsstonks instance) {
+import net.mcreator.stonks.ElementsStonks;
+
+@ElementsStonks.ModElement.Tag
+public class TabStonksMod extends ElementsStonks.ModElement {
+	public TabStonksMod(ElementsStonks instance) {
 		super(instance, 4);
 	}
 

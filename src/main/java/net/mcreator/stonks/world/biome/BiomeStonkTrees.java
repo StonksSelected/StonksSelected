@@ -1,4 +1,5 @@
-package net.mcreator.stonks;
+
+package net.mcreator.stonks.world.biome;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -10,14 +11,16 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.init.Blocks;
 
+import net.mcreator.stonks.entity.EntityStonker;
+import net.mcreator.stonks.ElementsStonks;
+
 import java.util.Random;
 
-@Elementsstonks.ModElement.Tag
-public class MCreatorStonkTrees extends Elementsstonks.ModElement {
+@ElementsStonks.ModElement.Tag
+public class BiomeStonkTrees extends ElementsStonks.ModElement {
 	@GameRegistry.ObjectHolder("stonks:stonktrees")
 	public static final BiomeGenCustom biome = null;
-
-	public MCreatorStonkTrees(Elementsstonks instance) {
+	public BiomeStonkTrees(ElementsStonks instance) {
 		super(instance, 22);
 	}
 
@@ -29,7 +32,6 @@ public class MCreatorStonkTrees extends Elementsstonks.ModElement {
 	@Override
 	public void init(FMLInitializationEvent event) {
 	}
-
 	static class BiomeGenCustom extends Biome {
 		public BiomeGenCustom() {
 			super(new Biome.BiomeProperties("Stonk Trees").setRainfall(0.5F).setBaseHeight(0.1F).setWaterColor(-851713).setHeightVariation(0.2F)
@@ -52,7 +54,7 @@ public class MCreatorStonkTrees extends Elementsstonks.ModElement {
 			this.spawnableCreatureList.clear();
 			this.spawnableWaterCreatureList.clear();
 			this.spawnableCaveCreatureList.clear();
-			this.spawnableCreatureList.add(new SpawnListEntry(MCreatorStonker.EntityCustom.class, 40, 1, 5));
+			this.spawnableCreatureList.add(new SpawnListEntry(EntityStonker.EntityCustom.class, 40, 1, 5));
 		}
 
 		@SideOnly(Side.CLIENT)

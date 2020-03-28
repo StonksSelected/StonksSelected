@@ -1,4 +1,5 @@
-package net.mcreator.stonks;
+
+package net.mcreator.stonks.entity;
 
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,21 +34,23 @@ import net.minecraft.entity.Entity;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.model.ModelVillager;
 
+import net.mcreator.stonks.procedure.ProcedureStonkerRightClickedOnEntity;
+import net.mcreator.stonks.ElementsStonks;
+
 import java.util.Random;
 
-@Elementsstonks.ModElement.Tag
-public class MCreatorStonker extends Elementsstonks.ModElement {
+@ElementsStonks.ModElement.Tag
+public class EntityStonker extends ElementsStonks.ModElement {
 	public static final int ENTITYID = 1;
 	public static final int ENTITYID_RANGED = 2;
-
-	public MCreatorStonker(Elementsstonks instance) {
+	public EntityStonker(ElementsStonks instance) {
 		super(instance, 2);
 	}
 
 	@Override
 	public void initElements() {
 		elements.entities.add(() -> EntityEntryBuilder.create().entity(EntityCustom.class).id(new ResourceLocation("stonks", "stonker"), ENTITYID)
-				.name("stonker").tracker(64, 1, true).egg(-16711888, -65536).build());
+				.name("stonker").tracker(64, 3, true).egg(-16711888, -65536).build());
 	}
 
 	@Override
@@ -69,7 +72,6 @@ public class MCreatorStonker extends Elementsstonks.ModElement {
 			return customRender;
 		});
 	}
-
 	public static class EntityCustom extends EntityCreature {
 		public EntityCustom(World world) {
 			super(world);
@@ -78,6 +80,11 @@ public class MCreatorStonker extends Elementsstonks.ModElement {
 			this.isImmuneToFire = true;
 			setNoAI(!true);
 			enablePersistence();
+		}
+
+		@Override
+		protected void initEntityAI() {
+			super.initEntityAI();
 			this.tasks.addTask(1, new EntityAIWander(this, 1));
 			this.tasks.addTask(2, new EntityAILookIdle(this));
 			this.tasks.addTask(3, new EntityAISwimming(this));
@@ -150,7 +157,7 @@ public class MCreatorStonker extends Elementsstonks.ModElement {
 			{
 				java.util.HashMap<String, Object> $_dependencies = new java.util.HashMap<>();
 				$_dependencies.put("entity", entity);
-				MCreatorStonkerRightClickedOnEntity.executeProcedure($_dependencies);
+				ProcedureStonkerRightClickedOnEntity.executeProcedure($_dependencies);
 			}
 			return true;
 		}
